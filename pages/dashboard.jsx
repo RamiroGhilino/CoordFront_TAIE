@@ -9,7 +9,9 @@ import {
  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import UserStatus from './userStatus'; // Update this line
+import UserStatus from './userStatus'; 
+import { useRouter } from 'next/router';
+
 
 const LoginPage = () => {
  const { data: session, status } = useSession();
