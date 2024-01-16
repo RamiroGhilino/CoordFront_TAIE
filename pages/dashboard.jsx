@@ -11,27 +11,34 @@ import {
 import { Button } from "@/components/ui/button";
 import UserStatus from './userStatus'; 
 import { useRouter } from 'next/router';
+import { withAuth } from '../lib/authcheck.js';
 
 
-const LoginPage = () => {
+
+
+const Dashboard = () => {
  const { data: session, status } = useSession();
+ const router = useRouter(); // Incluye esta línea
+
 
  return (
-    <div className="min-h-screen flex items-center justify-center">
-        {session ? (
-                   <UserStatus session={session} />
-        ) : (
-            <Card>
-               <CardTitle className="m-4">
-                Not signed in 
-                <CardDescription className="m-2">
-                  <Button onClick={() => signIn()} variant="outline">Sign in</Button>
-                </CardDescription>
-               </CardTitle>
-            </Card>
-        )}
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      {session ? (
+        <UserStatus session={session} />
+      ) : (
+        <Card>
+          <CardTitle className="m-4">
+            Parece que no encontramos tu sesión, intenta de nuevo:
+          </CardTitle>
+          <CardDescription className="m-2">
+            <Button onClick={() => signIn()} variant="outline">Iniciar sesión</Button>
+          </CardDescription>
+        </Card>
+      )}
     </div>
+  </div>
  )
 }
 
-export default LoginPage;
+export default withAuth (Dashboard);

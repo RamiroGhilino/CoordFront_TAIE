@@ -4,6 +4,7 @@ import image from '../lib/files/SIGLA_UCC_negativo.png';
 import Image from 'next/image';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Button } from './ui/button';
+import Link from 'next/link';
 
 const Navbar = () => {
     const router = useRouter();
@@ -18,12 +19,12 @@ const Navbar = () => {
                             <Image src={image} alt="UCC LOGO" className="h-8 w-8" />
                         </div>
                         <div className="hidden sm:ml-6 sm:flex space-x-4">
-                            <a href="/dashboard" className={`text-white hover:text-gray-300 ${router.pathname === '/dashboard' ? 'font-bold' : ''}`}>
+                            <Link href="/dashboard" className={`text-white hover:text-gray-300 ${router.pathname === '/dashboard' ? 'font-bold' : ''}`}>
                                 Tutorias
-                            </a>
-                            <a href="/postulations" className={`text-white hover:text-gray-300 ${router.pathname === '/playground' ? 'font-bold' : ''}`}>
+                            </Link>
+                            <Link href="/postulations" className={`text-white hover:text-gray-300 ${router.pathname === '/playground' ? 'font-bold' : ''}`}>
                                 Postulaciones
-                            </a>
+                            </Link>
                         </div>
                     </div>
                     <Button>
