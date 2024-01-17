@@ -18,9 +18,9 @@ import { useRouter } from "next/router";
 const UserStatus = ({ session }) => {
   const { email } = session.user;
   const router = useRouter(); // Initialize the useRouter hook
-  const [areas, setAreas] = useState([]);
   const [tutorshipInstances, setTutorshipInstances] = useState([]);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const accessToken = session?.access_token;
@@ -53,24 +53,16 @@ const UserStatus = ({ session }) => {
       })
       .then((data) => {
         console.log("New Access Token:", data.access_token);
-        fetch(
-          "https://backend-taie.onrender.com/api/tutorship-instances/?page=calendar&role=STD",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${data.access_token}`,
-            },
-          }
-        )
-          .then((tutorshipInstancesResponse) =>
-            tutorshipInstancesResponse.json()
-          )
-          .then((tutorshipInstancesData) => {
-            console.log(
-              "Tutorship Instances Data received:",
-              tutorshipInstancesData
-            );
-            setTutorshipInstances(tutorshipInstancesData);
+        fetch("https://backend-taie.onrender.com/api/tutorship-reports/", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${data.access_token}`,
+          },
+        })
+          .then((reportsResponse) => reportsResponse.json())
+          .then((reportsData) => {
+            console.log("Tutorship Reports Data received:", reportsData);
+            setReports(reportsData);
           })
           .catch((tutorshipInstancesError) => {
             console.error(
@@ -89,54 +81,49 @@ const UserStatus = ({ session }) => {
   }, [session, router]);
 
   return (
-    <div className="min-h-screen flex flex-col w-full">
-      {loading ? (
-        <Loading />
-      ) : (
-        <div>
-          <Navbar />
-          <div className="m-6">
-            <Card>
-              <CardTitle className="m-4">
-                Signed in as {email}
-                <CardDescription className="m-2">
-                  <Button onClick={() => signOut()} variant="outline">
-                    Sign out
-                  </Button>
-                </CardDescription>
-              </CardTitle>
-            </Card>
-            <div className="m-8">
-              <h1 className="text-2xl font-bold">Areas</h1>
+    <div
+      className="min-h-screen flex flex-col w-screen
+    "
+    >
+      <div>
+        <Navbar />
+        <div className="m-6">
+          <div className="m-8">
+            <h1 className="text-2xl font-bold">Reportes</h1>
 
-              {tutorshipInstances.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Area Name</TableHead>
-                      <TableHead>Status</TableHead>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Comment</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Tutorship Instance</TableHead>
+                  <TableHead>Tutor User</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reports.length > 0 ? (
+                  reports.map((report) => (
+                    <TableRow key={report.id}>
+                      <TableCell>{report.id}</TableCell>
+                      <TableCell>{report.comment}</TableCell>
+                      <TableCell>{report.subject}</TableCell>
+                      <TableCell>{report.tutorship_instance}</TableCell>
+                      <TableCell>{report.tutor_user}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {tutorshipInstances.map((instance) => (
-                      <TableRow key={instance.id}>
-                        <TableCell>{instance.id}</TableCell>
-                        <TableCell>{instance.date}</TableCell>
-                        <TableCell>{instance.area.name}</TableCell>
-                        <TableCell>{instance.status}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ) : (
-                <Loading />
-              )}
-            </div>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan="5">
+                      <Loading />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
