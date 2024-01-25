@@ -53,17 +53,21 @@ const UserStatus = ({ session }) => {
       })
       .then((data) => {
         console.log("New Access Token:", data.access_token);
-        fetch("https://backend-taie.onrender.com/api/tutorship-reports/", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${data.access_token}`,
-          },
-        })
+        fetch(
+          "https://backend-taie.onrender.com/api/tutorship-instances/?page=tutorship_page&role=COORD",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${data.access_token}`,
+            },
+          }
+        )
           .then((reportsResponse) => reportsResponse.json())
           .then((reportsData) => {
             console.log("Tutorship Reports Data received:", reportsData);
-            setReports(reportsData);
+            setTutorshipInstances(reportsData); // Update state variable
           })
+
           .catch((tutorshipInstancesError) => {
             console.error(
               "Fetch error for Tutorship Instances:",
@@ -95,21 +99,24 @@ const UserStatus = ({ session }) => {
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
-                  <TableHead>Comment</TableHead>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Tutorship Instance</TableHead>
-                  <TableHead>Tutor User</TableHead>
+                  <TableHead>Tutor</TableHead>
+                  <TableHead>Modalidad</TableHead>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead>Día</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {reports.length > 0 ? (
-                  reports.map((report) => (
-                    <TableRow key={report.id}>
-                      <TableCell>{report.id}</TableCell>
-                      <TableCell>{report.comment}</TableCell>
-                      <TableCell>{report.subject}</TableCell>
-                      <TableCell>{report.tutorship_instance}</TableCell>
-                      <TableCell>{report.tutor_user}</TableCell>
+                {console.log("Tutorship Instances:", tutorshipInstances)}
+                {tutorshipInstances.length > 0 ? (
+                  tutorshipInstances.map((instance) => (
+                    <TableRow key={instance.id}>
+                      <TableCell>{instance.id}</TableCell>
+                      <TableCell>
+                        {instance.schedule.tutor_user.first_name}
+                      </TableCell>
+                      <TableCell>{instance.schedule.modality}</TableCell>
+                      <TableCell>{instance.date}</TableCell>
+                      <TableCell>{instance.schedule.day}</TableCell>
                     </TableRow>
                   ))
                 ) : (
