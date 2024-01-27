@@ -14,6 +14,8 @@ import {
 import Loading from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/router";
+import { useQuery } from '@tanstack/react-query'
+
 
 const UserStatus = ({ session }) => {
   const { email } = session.user;
