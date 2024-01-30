@@ -24,7 +24,6 @@ export default NextAuth({
         session = Object.assign({}, session, {
           access_token: token.access_token,
         });
-        console.log(session);
       }
       return session;
     },
