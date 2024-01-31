@@ -29,62 +29,7 @@ const UserStatus = ({ session }) => {
 
     console.log("Access token:", accessToken);
     console.log("session:", session);
-
-    fetch("https://backend-taie.onrender.com/api/token/auth/", {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: accessToken,
-        origin: "page",
-      }),
-    })
-      .then((response) => {
-        console.log("Response status:", response);
-
-        if (!response.ok) {
-          console.error("Response error:", response.statusText);
-          signOut();
-          router.push("/");
-          return;
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        console.log("New Access Token:", data.access_token);
-        fetch(
-          "https://backend-taie.onrender.com/api/tutorship-instances/?page=tutorship_page&role=COORD",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${data.access_token}`,
-            },
-          }
-        )
-          .then((reportsResponse) => reportsResponse.json())
-          .then((reportsData) => {
-            console.log("Tutorship Reports Data received:", reportsData);
-            setTutorshipInstances(reportsData); // Update state variable
-          })
-
-          .catch((tutorshipInstancesError) => {
-            console.error(
-              "Fetch error for Tutorship Instances:",
-              tutorshipInstancesError.message
-            );
-          })
-          .finally(() => {
-            setLoading(false); // Set loading to false once the data is fetched
-          });
-      })
-      .catch((error) => {
-        console.error("Fetch error:", error.message);
-        setLoading(false); // Set loading to false in case of an error
-      });
-  }, [session, router]);
+  }, [session]);
 
   return (
     <div

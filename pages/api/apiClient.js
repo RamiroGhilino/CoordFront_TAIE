@@ -1,10 +1,11 @@
-
 class APIClient {
   /**
    * Initializes the APIClient instance and sets the base URL for API requests.
    */
   constructor() {
-    this.baseURL = process.env.BACKEND_URL;
+    this.baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    this.accessToken = null;
+    console.log("Base URL:", this.baseURL);
   }
 
   /**
@@ -16,6 +17,11 @@ class APIClient {
       APIClient.instance = new APIClient();
     }
     return APIClient.instance;
+  }
+
+  async setAccessToken(token) {
+    this.accessToken = token;
+    return;
   }
 
   /**
@@ -46,6 +52,7 @@ class APIClient {
 
       return response.json();
     } catch (error) {
+      console.log("Error:", error);
       throw new Error("Failed to fetch access token");
     }
   }
@@ -56,28 +63,37 @@ class APIClient {
    * @returns {Promise<Object>} A promise that resolves to the response JSON object.
    * @throws {Error} If the request fails or the response is not OK.
    */
-  async fetchTutorshipInstances(accessToken) {
-    try {
-      const response = await fetch(
-        `${this.baseURL}/api/tutorship-instances/?page=tutorship_page&role=COORD`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+  async fetchTutorshipInstances() {
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
+    const response = await fetch(
+      `${this.baseURL}/api/tutorship-instances/?page=tutorship_page&role=COORD`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
       }
+    );
+    return response.json();
 
-      return response.json();
-    } catch (error) {
-      throw new Error("Failed to fetch tutorship instances");
-    }
+  }
+
+  async fetchPostulations() {
+    console.log("Fetching postulations with access token:", this.accessToken);
+
+    const response = await fetch(
+      `${this.baseURL}/api/postulations/`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      }
+    );
+    return response.json();
   }
 }
+
+
 
 export default APIClient;

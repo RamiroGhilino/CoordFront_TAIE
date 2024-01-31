@@ -1,17 +1,25 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import image from '../lib/files/SIGLA_UCC_negativo.png';
+import { ModeToggle } from "@/components/modeTogle";
+import UserPopOver from "@/components/UserPopOver";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
 
 const Navbar = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
   return (
-    <nav style={{ backgroundColor: '#132D58', boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)', width: '100%' } }>
+    <nav style={{ backgroundColor: '#132D58', boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)', width: '100%' }}>
       <div className="px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -20,24 +28,24 @@ const Navbar = () => {
             </div>
 
             <div className="hidden sm:ml-6 sm:flex space-x-4">
-              <Link href="/dashboard" className={`text-white hover:text-gray-300 ${router.pathname === '/dashboard' ? 'font-bold' : ''}`}>
-                Tutorias
+              <Link href="/reports" className={`text-white hover:text-gray-300 ${router.pathname === '/reports' ? 'font-bold' : ''}`}>
+                Tutorías
               </Link>
               <Link href="/postulations" className={`text-white hover:text-gray-300 ${router.pathname === '/postulations' ? 'font-bold' : ''}`}>
                 Postulaciones
+              </Link>
+              <Link href="http://metabasetaie.me/" className={`text-white hover:text-gray-300 `}>
+                Estadísticas
               </Link>
             </div>
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button>
-              <div className="text-white">
-                {session?.user?.name ?? 'No inicio correctamente'}
-              </div>
-            </Button>
-            <Button onClick={() => signOut()} variant="outline" size="sm">
-                Cerrar sesión
-            </Button>
+            {/* Button for user name */}
+            <UserPopOver />
+
+            {/* ModeToggle component */}
+            <ModeToggle />
           </div>
         </div>
       </div>

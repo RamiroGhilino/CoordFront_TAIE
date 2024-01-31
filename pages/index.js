@@ -4,10 +4,7 @@ import { useSession, signIn, signOut, getSession} from 'next-auth/react';
 import { Card } from "@/components/ui/card";
 import { ModeToggle } from "@/components/modeTogle";
 import APIClient from "@/pages/api/apiClient";
-import { useQuery } from '@tanstack/react-query'
-import { useEffect } from "react";
 import { useRouter } from 'next/router';
-import { redirect } from 'next/navigation';
 
 const apiClient = APIClient.getInstance();
 
@@ -22,38 +19,30 @@ const apiClient = APIClient.getInstance();
  * @returns {JSX.Element} The rendered authentication page component.
  */
 export default function AuthenticationPage() {
-
+  const router = useRouter();
   const { data: session, status } = useSession();
   
-  signOut();
-  const { isLoading, isError, data, error } = useQuery({
-    queryKey: ['access_token', session],
-    queryFn: () => apiClient.fetchAccessToken(session.access_token),
-    enabled: !!session,
-  })
-
-  if (isError) {
-    signOut();
+  if(session?.access_token){
+    try{
+      apiClient.setAccessToken(session.access_token);
+      const responseFetch = async () => await apiClient.fetchAccessToken(session.access_token)
+      console.log("Access Token del Fetch ====> ", responseFetch);
+      router.push('/reports');
+    }catch(error){
+      //TODO: Revisar que efectivamente niegue a los mail no UCC
+      console.log("===================Error ==========>", error);
+      signOut();
+    }
   }
   
-  if (!isLoading && !isError) {
-    console.log("New Access Token:", data);
-    //redirect to /dashboard
-    redirect('/dashboard');
-  }
-
   /**
    * Handles the sign-in process.
    * Uses the `signIn` function from the `next-auth` library to initiate the sign-in.
    */
-  const handleSignIn = async () => {
-    await signIn();
+  const handleSignIn = () => {
+    signIn();
   };
   
-  console.log("Status:", status);
-  console.log("Session:", session);
-
-
   return (
     <div className="flex items-center justify-center min-h-screen relative">
       <div className="absolute top-0 right-0 mt-4 mr-4">
