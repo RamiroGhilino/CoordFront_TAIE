@@ -1,12 +1,15 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useSession, signIn, signOut, getSession} from 'next-auth/react';
+import { useEffect, useState } from "react";
+import { useSession, signIn, signOut } from 'next-auth/react';
 import { Card } from "@/components/ui/card";
 import { ModeToggle } from "@/components/modeTogle";
-import APIClient from "@/pages/api/apiClient";
 import { useRouter } from 'next/router';
+import axios from "./api/axios";
+import useAuth from "@/hooks/useAuth";
+import useAuthenticate from "@/hooks/useAuthenticate";
 
-const apiClient = APIClient.getInstance();
+const TOKEN_AUTH = '/api/token/auth/';
 
 /**
  * Renders the authentication page component.
@@ -21,19 +24,21 @@ const apiClient = APIClient.getInstance();
 export default function AuthenticationPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  
-  if(session?.access_token){
-    try{
-      apiClient.setAccessToken(session.access_token);
-      const responseFetch = async () => await apiClient.fetchAccessToken(session.access_token)
-      console.log("Access Token del Fetch ====> ", responseFetch);
-      router.push('/reports');
-    }catch(error){
-      //TODO: Revisar que efectivamente niegue a los mail no UCC
-      console.log("===================Error ==========>", error);
-      signOut();
+  const verifyGoogleAccount = useAuthenticate();
+
+  console.log("===> Session:", session);
+
+  useEffect(() => {
+    if(session?.access_token){
+      verifyGoogleAccount().then(verified => {
+        if(!verified){
+          signOut();
+          return null;
+        }
+        router.push('/postulations');
+      });
     }
-  }
+  }, [session?.access_token]);
   
   /**
    * Handles the sign-in process.
@@ -91,3 +96,4 @@ export default function AuthenticationPage() {
     </div>
   );
 }
+

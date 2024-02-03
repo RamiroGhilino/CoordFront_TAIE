@@ -34,9 +34,9 @@ const Navbar = () => {
               <Link href="/postulations" className={`text-white hover:text-gray-300 ${router.pathname === '/postulations' ? 'font-bold' : ''}`}>
                 Postulaciones
               </Link>
-              <Link href="http://metabasetaie.me/" className={`text-white hover:text-gray-300 `}>
+              <a href="http://metabasetaie.me/" target="_blank" rel="noopener noreferrer" className={`text-white hover:text-gray-300`}>
                 Estadísticas
-              </Link>
+              </a>
             </div>
           </div>
 

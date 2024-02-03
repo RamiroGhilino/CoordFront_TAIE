@@ -5,17 +5,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { useSession, signOut } from 'next-auth/react';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
+import UserSignOut from "@/hooks/singOutUser"
+import { useSession } from "next-auth/react"
+
 
 const UserPopOver = () => {
   const { data: session, status } = useSession();
-  
-  console.log("SESION DESDE POP OVER =====> ",session);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -38,10 +39,7 @@ const UserPopOver = () => {
           </div>
           <Separator />
             <div className="grid gap-4 flex items-center justify-center"> {/* Cambia 'items-center justify-center' para centrar horizontalmente */}
-              {/* Button for sign out */}
-              <Button onClick={() => signOut()} variant="outline">
-                Cerrar sesión
-              </Button>
+              <UserSignOut />
             </div>
         </div>
 
