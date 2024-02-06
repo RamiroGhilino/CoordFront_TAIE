@@ -21,13 +21,13 @@ const UserPopOver = () => {
     <Popover>
       <PopoverTrigger asChild>
         <Avatar>
-          <AvatarImage src={session?.user?.image} alt="@shadcn" />
+          <AvatarImage src={session?.user?.image} alt="@account_profile_picture" />
           <AvatarFallback>
             {session?.user?.name?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
       </PopoverTrigger>
-      <PopoverContent className="w-40 flex flex-col items-center"> {/* Añade la clase 'flex flex-col items-center' para centrar los elementos */}
+      <PopoverContent className="w-40 flex flex-col items-center"> 
         <div className="grid gap-4">
           <div className="flex flex-col space-y-3">
             <p className="text-base font-medium leading-none">
@@ -38,7 +38,7 @@ const UserPopOver = () => {
             </p>
           </div>
           <Separator />
-            <div className="grid gap-4 flex items-center justify-center"> {/* Cambia 'items-center justify-center' para centrar horizontalmente */}
+            <div className="grid gap-4 flex items-center justify-center"> 
               <UserSignOut />
             </div>
         </div>

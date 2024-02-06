@@ -35,8 +35,6 @@ const useAuthenticate = () => {
             console.log('Missing Google Access Token');
           } else if (err.response?.status === 401) {
             console.log('Unauthorized');
-          } else {
-            setErconsole.logrMsg('Login Failed');
           }
 
           return false;

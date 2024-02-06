@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthProvider';
+import { Toaster } from "@/components/ui/toaster";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ export default function App({ Component, pageProps, session }) {
           disableTransitionOnChange
         >
           <AuthProvider>
+            <Toaster /> {/* Aquí agregamos el componente Toaster */}
             <Component {...pageProps} />
           </AuthProvider>
         </ThemeProvider>
@@ -24,4 +26,3 @@ export default function App({ Component, pageProps, session }) {
     </SessionProvider>
  );
 }
-
