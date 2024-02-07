@@ -19,11 +19,9 @@ const useAxiosPrivate = () => {
         const requestInterceptor = axiosPrivate.interceptors.request.use(
             config => {
                 if (!config.headers['Authorization']) {
-                    console.log("Adding authorization header:", auth?.access_token);
 
                     config.headers['Authorization'] = `Bearer ${auth?.access_token}`;
                 }
-                console.log("Headers Actualizados:", JSON.stringify(config));
 
                 return config
             }, (error) => Promise.reject(error)
@@ -33,7 +31,6 @@ const useAxiosPrivate = () => {
         const responseInterceptor = axiosPrivate.interceptors.response.use(
             response => response,
             async (error) => {
-                console.log("Detected error on fetch:", error);
                 const prevRequest = error?.config;
                 //This if prevents for retry more than 1 time
                 if (error?.response?.status === 403 && !prevRequest?.sent) {

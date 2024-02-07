@@ -31,7 +31,7 @@ import { toast } from "@/components/ui/use-toast";
 
 // Definimos el esquema de validación con Zod
 const FormSchema = z.object({
-  message: z.string().min(1, "El comentario es requerido"),
+  comentary: z.string().min(1, "El comentario es requerido"),
   areas: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "Es necesario elegir al menos un área.",
   }),
@@ -82,24 +82,61 @@ const PostulationsDialog = ({ row }) => {
   function onSubmit(data) {
     if (Object.keys(form.formState.errors).length === 0) {
       setOpen(false);
-
-      toast({
-        title: "You submitted the following values:",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          </pre>
-        ),
-      });
+  
+      axiosPrivate
+        .post(
+          `/api/postulations/${row.id}/close-postulation/`,
+          JSON.stringify({
+            approve: true,
+            comment: data.comentary,
+            areas: data.areas,
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          if (response.status === 200) {
+            toast({
+              variant: "success",
+              title: "Postulación Aceptada",
+              description: "La postulación ha sido aprobada correctamente",
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Aquí puedes manejar el error de la manera que desees, por ejemplo, mostrando un mensaje de error al usuario
+          if (error.response && error.response.status === 409) {
+            toast({
+              variant: "destructive",
+              title: "No es posible aprobar la postulación",
+              description: "La postulación que inténtas aprobar entra en conflicto con el perfil del estudiante. Si pensas que es un error, comunícate con el administrador.",
+            });
+          }else{
+            toast({
+              variant: "destructive",
+              title: "¡Algo salió mal!",
+              description: "Inténtalo de nuevo, si el problema persiste comunicate con el administrador.",
+            });
+          }
+        });
     } else {
-      // Handle form errors here, such as displaying a message to the user
-      console.error("Form has errors", form.formState.errors);
+      console.error("Error en la validación de aprobación:", approvalResult.error);
     }
+  }
+  
+
+  function onError(errors) {
+    console.log("ERROR EN FORMULARIO ", errors);
   }
 
   return (
     <div>
-      <Button variant="ghost" className="h-8 w-8 p-0" onClick={openDialog}>
+      <Button variant="ghost" className="h-8 w-8 p-0" onClick={openDialog} disabled={row.status==="Revision" ? false : true}>
         <MoreHorizontal className="h-4 w-4" />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -111,7 +148,7 @@ const PostulationsDialog = ({ row }) => {
         {postulation && (
           <DialogContent className="sm:max-w-xl">
             <DialogHeader>
-              <DialogTitle> Detalles de la Postulación </DialogTitle>
+              <DialogTitle>Detalles de la Postulación</DialogTitle>
               <DialogDescription>
                 Revisa los datos de la postulación, también puedes aceptarla o
                 rechazarla.
@@ -161,20 +198,16 @@ const PostulationsDialog = ({ row }) => {
                   </ul>
                 </div>
               </div>
-              <div className="grid gap-4 rounded-md border">
-                <Form {...form}>
-                  <form
-                    id="form"
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
-                  >
+              <Form {...form}>
+                <form id="form" onSubmit={form.handleSubmit(onSubmit, onError)}>
+                  <div className="grid gap-4 ">
                     <FormField
                       control={form.control}
                       name="areas"
                       render={() => (
                         <FormItem>
-                          <div className="mb-4">
-                            <FormLabel className="text-base"> Áreas </FormLabel>
+                          <div>
+                            <FormLabel className="text-base">Áreas *</FormLabel>
                             <FormDescription>
                               Selecciona las áreas aprobadas sobre las que el
                               tutor puede brindar tutorías.
@@ -189,7 +222,7 @@ const PostulationsDialog = ({ row }) => {
                                 return (
                                   <FormItem
                                     key={area.id}
-                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                    className="flex flex-row items-start space-x-3 space-y-0 mx-4  "
                                   >
                                     <FormControl>
                                       <Checkbox
@@ -218,19 +251,44 @@ const PostulationsDialog = ({ row }) => {
                               }}
                             />
                           ))}
+                          <FormMessage className="m-4" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="comentary"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="mt-4">
+                            <FormLabel className="text-base">
+                              Comentario *
+                            </FormLabel>
+                          </div>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Dejá un comentario sobre tu decisión."
+                              className="resize-none"
+                              {...field}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </form>
-                </Form>
-              </div>
-
+                  </div>
+                </form>
+              </Form>
               <DialogFooter>
-                <Button form="form" variant="destructive" type="submit">
+                <Button variant="destructive" type="submit" form="form">
                   Rechazar
                 </Button>
-                <Button form="form" type="submit">
+                <Button
+                  onClick={form.handleSubmit(onSubmit, onError)}
+                  form="form"
+                >
                   Aprobar
                 </Button>
               </DialogFooter>

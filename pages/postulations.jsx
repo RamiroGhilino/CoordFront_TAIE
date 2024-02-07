@@ -45,7 +45,6 @@ const PostulationsComponent = () => {
         status: postulation.status,
       }));
 
-      console.log("Mapped data:", mappedData);
 
       return mappedData;
     },

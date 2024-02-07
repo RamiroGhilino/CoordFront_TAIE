@@ -80,7 +80,6 @@ const TutorshipsDialog = ({ row }) => {
         })),
       };
 
-      console.log("Mapped Data reports and reviews:", mappedData);
       return mappedData;
     },
     enabled: open,
@@ -136,9 +135,9 @@ const TutorshipsDialog = ({ row }) => {
             )}
             <div>
               <Accordion type="single" collapsible className="w-full">
-                {tutorship?.reviews?.map((review) => (
-                  <AccordionItem key={review.id} value={`review-${review.id}`}>
-                    <AccordionTrigger>{`Reseña ${review.id}`}</AccordionTrigger>
+                {tutorship?.reviews?.map((review, index) => (
+                  <AccordionItem key={review.id} value={`review-${index}`}>
+                    <AccordionTrigger>{`Reseña ${index+1}`}</AccordionTrigger>
                     <AccordionContent>
                       <Review review={review} />
                     </AccordionContent>

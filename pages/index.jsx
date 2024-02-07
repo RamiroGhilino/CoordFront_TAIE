@@ -26,7 +26,6 @@ export default function AuthenticationPage() {
   const { data: session, status } = useSession();
   const verifyGoogleAccount = useAuthenticate();
 
-  console.log("===> Session:", session);
 
   useEffect(() => {
     if(session?.access_token){

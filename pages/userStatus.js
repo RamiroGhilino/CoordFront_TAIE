@@ -26,9 +26,6 @@ const UserStatus = ({ session }) => {
 
   useEffect(() => {
     const accessToken = session?.access_token;
-
-    console.log("Access token:", accessToken);
-    console.log("session:", session);
   }, [session]);
 
   return (
@@ -53,7 +50,6 @@ const UserStatus = ({ session }) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {console.log("Tutorship Instances:", tutorshipInstances)}
                 {tutorshipInstances.length > 0 ? (
                   tutorshipInstances.map((instance) => (
                     <TableRow key={instance.id}>

@@ -22,20 +22,12 @@ const useAuthenticate = () => {
               }
             }
           );
-          console.log("Respuesta de Back =>", response?.data);
           const access_token = response?.data?.access_token;
           const refresh_token = response?.data?.refresh_token;
           const user = response?.data?.user;
           await setAuth({access_token, refresh_token, user});
           return true;
         }catch(err){
-          if (!err?.response) {
-            console.log('No Server Response');
-          } else if (err.response?.status === 400) {
-            console.log('Missing Google Access Token');
-          } else if (err.response?.status === 401) {
-            console.log('Unauthorized');
-          }
 
           return false;
         }

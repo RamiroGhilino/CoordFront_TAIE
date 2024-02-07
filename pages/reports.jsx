@@ -86,7 +86,7 @@ const Reports = () => {
                     </TableRow>
                   </TableHeader>
                   <TableRow>
-                    <TableCell colSpan="7">
+                    <TableCell colSpan={columnsReport.length}>
                       <p>
                         {" "}
                         Error al obtener las tutorías con sus reportes y reseñas
@@ -108,7 +108,7 @@ const Reports = () => {
                     </TableRow>
                   </TableHeader>
                   <TableRow>
-                    <TableCell colSpan="7">
+                    <TableCell colSpan={columnsReport.length}>
                       <p> No hay postulaciones con reseñas y/o reportes</p>
                     </TableCell>
                   </TableRow>
