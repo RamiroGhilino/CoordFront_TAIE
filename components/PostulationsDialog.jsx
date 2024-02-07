@@ -71,7 +71,7 @@ const PostulationsDialog = ({ row }) => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       message: "",
-      areas: []
+      areas: [],
     },
   });
 
@@ -80,23 +80,22 @@ const PostulationsDialog = ({ row }) => {
   };
 
   function onSubmit(data) {
-    if (Object.keys(form.formState.errors).length ===  0) {
+    if (Object.keys(form.formState.errors).length === 0) {
       setOpen(false);
-  
+
       toast({
         title: "You submitted the following values:",
         description: (
           <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null,  2)}</code>
+            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
           </pre>
         ),
       });
     } else {
       // Handle form errors here, such as displaying a message to the user
-      console.error('Form has errors', form.formState.errors);
+      console.error("Form has errors", form.formState.errors);
     }
   }
-  
 
   return (
     <div>
@@ -164,7 +163,11 @@ const PostulationsDialog = ({ row }) => {
               </div>
               <div className="grid gap-4 rounded-md border">
                 <Form {...form}>
-                  <form  id="form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                  <form
+                    id="form"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8"
+                  >
                     <FormField
                       control={form.control}
                       name="areas"
@@ -190,12 +193,19 @@ const PostulationsDialog = ({ row }) => {
                                   >
                                     <FormControl>
                                       <Checkbox
-                                        defaultChecked={field.value?.includes(area.name)}
+                                        defaultChecked={field.value?.includes(
+                                          area.name
+                                        )}
                                         onCheckedChange={(checked) => {
                                           return checked
-                                            ? field.onChange([...field.value, area.name])
+                                            ? field.onChange([
+                                                ...field.value,
+                                                area.name,
+                                              ])
                                             : field.onChange(
-                                                field.value?.filter((value) => value !== area.name)
+                                                field.value?.filter(
+                                                  (value) => value !== area.name
+                                                )
                                               );
                                         }}
                                       />
@@ -220,7 +230,9 @@ const PostulationsDialog = ({ row }) => {
                 <Button form="form" variant="destructive" type="submit">
                   Rechazar
                 </Button>
-                <Button form="form" type="submit">Aprobar</Button>
+                <Button form="form" type="submit">
+                  Aprobar
+                </Button>
               </DialogFooter>
             </div>
           </DialogContent>

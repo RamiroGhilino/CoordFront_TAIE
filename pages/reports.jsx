@@ -29,7 +29,7 @@ const Reports = () => {
   } = useQuery({
     queryKey: ["tutorships"],
     queryFn: async () => {
-      const response = await axiosPrivate.post(
+      const response = await axiosPrivate.get(
         "/api/tutorship-instances/?role=COORD&page=tutorship_page"
       );
       const mappedData = response.data.map((instance) => ({
@@ -61,16 +61,18 @@ const Reports = () => {
             <div className="m-10 rounded-md border">
               {isLoading ? (
                 <Table>
-                  <TableRow>
-                    {columnsReport.map((column) => (
-                      <TableHead key={column.accessor}>
-                        {column.header}
-                      </TableHead>
-                    ))}
-                    <TableBody>
-                      <SkeletonRow ncolumns={columnsReport.length} mrows={10} />
-                    </TableBody>
-                  </TableRow>
+                  <TableHeader>
+                    <TableRow>
+                      {columnsReport.map((column) => (
+                        <TableHead key={column.accessor}>
+                          {column.header}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <SkeletonRow ncolumns={columnsReport.length} mrows={10} />
+                  </TableBody>
                 </Table>
               ) : isError ? (
                 <Table>
