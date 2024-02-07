@@ -72,7 +72,7 @@ const PostulationsComponent = () => {
                     <TableHead>Acciones</TableHead>
                   </TableRow>
                   <TableBody>
-                    <SkeletonRow ncolumns={7} mrows={10} />
+                    <SkeletonRow ncolumns={columnsPostulations.length} mrows={10} />
                   </TableBody>
                 </Table>
               </div>

@@ -43,7 +43,7 @@ export const columnsReport = [
         header: "Fotografía",
         cell: ({ row }) => {
             const profile_picture = row.original.profile_picture
-            const user_name = row.original.student_name
+            const user_name = row.original.tutor_name
             return(
                 <Avatar>
                     <AvatarImage src={profile_picture} alt="@student_profile_picture" />

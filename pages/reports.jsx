@@ -15,7 +15,7 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { withAuth } from "../lib/authcheck.js";
 import DataTable from "@/components/DataTable.jsx";
 import { columnsReport } from "@/components/columns";
-
+import { SkeletonRow } from "@/components/TableSkeleton";
 
 const Reports = () => {
   const { data: session, status } = useSession();
@@ -29,13 +29,13 @@ const Reports = () => {
   } = useQuery({
     queryKey: ["tutorships"],
     queryFn: async () => {
-      const response = await axiosPrivate.get(
+      const response = await axiosPrivate.post(
         "/api/tutorship-instances/?role=COORD&page=tutorship_page"
       );
-      const mappedData = response.data.map(instance => ({
+      const mappedData = response.data.map((instance) => ({
         id: instance.id,
         tutor_name:
-        instance.schedule.tutor_user.last_name +
+          instance.schedule.tutor_user.last_name +
           ", " +
           instance.schedule.tutor_user.first_name,
         profile_picture: instance.schedule.tutor_user.profile_picture,
@@ -56,51 +56,62 @@ const Reports = () => {
           <div>
             <Navbar />
             <h1 className="my-10 text-2xl font-bold">
-              {" "}
-              Tutorías: Reportes y Reseñas{" "}
+              Tutorías: Reportes y Reseñas
             </h1>
             <div className="m-10 rounded-md border">
-              <Table>
-                <TableHeader>
+              {isLoading ? (
+                <Table>
                   <TableRow>
                     {columnsReport.map((column) => (
                       <TableHead key={column.accessor}>
                         {column.header}
                       </TableHead>
                     ))}
+                    <TableBody>
+                      <SkeletonRow ncolumns={columnsReport.length} mrows={10} />
+                    </TableBody>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
+                </Table>
+              ) : isError ? (
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan="8">
-                        <Loading />
-                      </TableCell>
+                      {columnsReport.map((column) => (
+                        <TableHead key={column.accessor}>
+                          {column.header}
+                        </TableHead>
+                      ))}
                     </TableRow>
-                  ) : isError ? (
+                  </TableHeader>
+                  <TableRow>
+                    <TableCell colSpan="7">
+                      <p>
+                        {" "}
+                        Error al obtener las tutorías con sus reportes y reseñas
+                      </p>
+                    </TableCell>
+                  </TableRow>
+                </Table>
+              ) : tutorships.length > 0 ? (
+                <DataTable columns={columnsReport} data={tutorships} />
+              ) : (
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan="8">
-                        <p>
-                          {" "}
-                          Error al obtener las tutorías con sus reportes y
-                          reseñas
-                        </p>
-                      </TableCell>
+                      {columnsReport.map((column) => (
+                        <TableHead key={column.accessor}>
+                          {column.header}
+                        </TableHead>
+                      ))}
                     </TableRow>
-                  ) : tutorships.length > 0 ? (
-                    <DataTable
-                      columns={columnsReport}
-                      data={tutorships}
-                    />
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan="8">
-                        <p>No hay postulaciones con reseñas y/o reportes</p>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableRow>
+                    <TableCell colSpan="7">
+                      <p> No hay postulaciones con reseñas y/o reportes</p>
+                    </TableCell>
+                  </TableRow>
+                </Table>
+              )}
             </div>
           </div>
         </div>
