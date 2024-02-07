@@ -22,6 +22,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,12 +31,16 @@ import * as z from "zod";
 import { toast } from "@/components/ui/use-toast";
 
 // Definimos el esquema de validación con Zod
-const FormSchema = z.object({
-  comentary: z.string().min(1, "El comentario es requerido"),
-  areas: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: "Es necesario elegir al menos un área.",
-  }),
-});
+const FormSchema = z
+  .object({
+    approved: z.string().transform((value) => (value === "true" )),
+    comentary: z.string().min(1, "El comentario es requerido"),
+    areas: z.array(z.string()),
+  })
+  .refine((data) => data.approved ? data.areas.length > 0 : true,  {
+    message: "Debe seleccionar al menos una área.",
+    path: ["areas"],
+  });
 
 const PostulationsDialog = ({ row }) => {
   const [open, setOpen] = useState(false);
@@ -82,12 +87,12 @@ const PostulationsDialog = ({ row }) => {
   function onSubmit(data) {
     if (Object.keys(form.formState.errors).length === 0) {
       setOpen(false);
-  
+
       axiosPrivate
         .post(
           `/api/postulations/${row.id}/close-postulation/`,
           JSON.stringify({
-            approve: true,
+            approve: data.approved,
             comment: data.comentary,
             areas: data.areas,
           }),
@@ -114,29 +119,39 @@ const PostulationsDialog = ({ row }) => {
             toast({
               variant: "destructive",
               title: "No es posible aprobar la postulación",
-              description: "La postulación que inténtas aprobar entra en conflicto con el perfil del estudiante. Si pensas que es un error, comunícate con el administrador.",
+              description:
+                "La postulación que inténtas aprobar entra en conflicto con el perfil del estudiante. Si pensas que es un error, comunícate con el administrador.",
             });
-          }else{
+          } else {
             toast({
               variant: "destructive",
               title: "¡Algo salió mal!",
-              description: "Inténtalo de nuevo, si el problema persiste comunicate con el administrador.",
+              description:
+                "Inténtalo de nuevo, si el problema persiste comunicate con el administrador.",
             });
           }
         });
     } else {
-      console.error("Error en la validación de aprobación:", approvalResult.error);
+      console.error(
+        "Error en la validación de aprobación:",
+        approvalResult.error
+      );
     }
   }
-  
 
+ 
   function onError(errors) {
     console.log("ERROR EN FORMULARIO ", errors);
   }
 
   return (
     <div>
-      <Button variant="ghost" className="h-8 w-8 p-0" onClick={openDialog} disabled={row.status==="Revision" ? false : true}>
+      <Button
+        variant="ghost"
+        className="h-8 w-8 p-0"
+        onClick={openDialog}
+        disabled={row.status === "Revision" ? false : true}
+      >
         <MoreHorizontal className="h-4 w-4" />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -279,14 +294,37 @@ const PostulationsDialog = ({ row }) => {
                       )}
                     />
                   </div>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="approved"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input className="resize-none hidden" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </form>
               </Form>
               <DialogFooter>
-                <Button variant="destructive" type="submit" form="form">
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  form="form"
+                  onClick={() => {
+                    form.setValue("approved", "false");
+                  }}
+                >
                   Rechazar
                 </Button>
                 <Button
-                  onClick={form.handleSubmit(onSubmit, onError)}
+                  type="submit"
+                  onClick={() => {
+                    form.setValue("approved", "true");
+                  }}
                   form="form"
                 >
                   Aprobar
