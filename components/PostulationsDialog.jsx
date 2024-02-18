@@ -58,7 +58,7 @@ const PostulationsDialog = ({ row }) => {
       const mappedData = {
         id: response.data.id,
         ucc_key: response.data.student_user.ucc_key,
-        student_name: `${response.data.student_user.last_name}, ${response.data.student_user.first_name}`,
+        full_name: `${response.data.student_user.last_name}, ${response.data.student_user.first_name}`,
         careers: response.data.student_user.careers,
         profile_picture: response.data.student_user.profile_picture,
         status: response.data.status,
@@ -178,22 +178,22 @@ const PostulationsDialog = ({ row }) => {
                       alt="@student_profile_picture"
                     />
                     <AvatarFallback>
-                      {postulation.student_name.charAt(0).toUpperCase()}
+                      {postulation.full_name.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <Label
                       className="h-2 w-40 font-bold"
-                      htmlFor="student_name"
+                      htmlFor="full_name"
                     >
                       Nombre del estudiante:
                     </Label>
                     <p className="text-sm font-medium indent-1.5">
-                      {postulation.student_name}
+                      {postulation.full_name}
                     </p>
                     <Label
                       className="h-2 w-40 font-bold"
-                      htmlFor="student_name"
+                      htmlFor="full_name"
                     >
                       Clave UCC:
                     </Label>

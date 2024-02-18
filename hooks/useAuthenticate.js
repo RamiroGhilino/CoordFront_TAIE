@@ -28,7 +28,6 @@ const useAuthenticate = () => {
           await setAuth({access_token, refresh_token, user});
           return true;
         }catch(err){
-
           return false;
         }
       }

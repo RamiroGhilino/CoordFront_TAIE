@@ -34,7 +34,7 @@ const Reports = () => {
       );
       const mappedData = response.data.map((instance) => ({
         id: instance.id,
-        tutor_name:
+        full_name:
           instance.schedule.tutor_user.last_name +
           ", " +
           instance.schedule.tutor_user.first_name,
@@ -58,7 +58,7 @@ const Reports = () => {
             <h1 className="my-10 text-2xl font-bold">
               Tutorías: Reportes y Reseñas
             </h1>
-            <div className="m-10 rounded-md border">
+            <div className="m-10 ">
               {isLoading ? (
                 <Table>
                   <TableHeader>
@@ -88,14 +88,13 @@ const Reports = () => {
                   <TableRow>
                     <TableCell colSpan={columnsReport.length}>
                       <p>
-                        {" "}
                         Error al obtener las tutorías con sus reportes y reseñas
                       </p>
                     </TableCell>
                   </TableRow>
                 </Table>
               ) : tutorships.length > 0 ? (
-                <DataTable columns={columnsReport} data={tutorships} />
+                <DataTable columns={columnsReport} data={tutorships} page="tutorships" />
               ) : (
                 <Table>
                   <TableHeader>

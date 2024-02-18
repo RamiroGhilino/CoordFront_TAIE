@@ -13,13 +13,13 @@ const UserData = ({ user }) => {
           </AvatarFallback>
         </Avatar>
         <div>
-          <Label className="h-2 w-40 font-bold" htmlFor="student_name">
+          <Label className="h-2 w-40 font-bold" htmlFor="full_name">
             Nombre del estudiante:
           </Label>
           <p className="text-sm font-medium indent-1.5">
             {user.last_name}, {user.first_name}
           </p>
-          <Label className="h-2 w-40 font-bold" htmlFor="student_name">
+          <Label className="h-2 w-40 font-bold" htmlFor="full_name">
             Clave UCC:
           </Label>
           <p className="text-sm font-medium indent-1.5">{user.ucc_key}</p>
