@@ -36,7 +36,7 @@ const PostulationsComponent = () => {
       const mappedData = response.data.map((postulation) => ({
         id: postulation.id,
         ucc_key: postulation.student_user.ucc_key,
-        student_name:
+        full_name:
           postulation.student_user.last_name +
           ", " +
           postulation.student_user.first_name,
@@ -44,7 +44,6 @@ const PostulationsComponent = () => {
         profile_picture: postulation.student_user.profile_picture,
         status: postulation.status,
       }));
-
 
       return mappedData;
     },
@@ -57,72 +56,73 @@ const PostulationsComponent = () => {
         <div className="min-h-screen flex flex-col w-screen">
           <div>
             <Navbar />
-            <h1 className="my-10 text-2xl font-bold"> Postulaciones </h1>
-            {isLoading ? (
-              <div className="m-10 rounded-md border">
+            <h1 className="my-10 text-2xl font-bold">
+              Estudiantes: Postulaciones
+            </h1>
+            <div className="m-10 ">
+              {isLoading ? (
                 <Table>
-                  <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Clave UCC</TableHead>
-                    <TableHead>Apellido y Nombre</TableHead>
-                    <TableHead>Fotografía</TableHead>
-                    <TableHead>Careras</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Acciones</TableHead>
-                  </TableRow>
+                  <TableHeader>
+                    <TableRow>
+                      {columnsPostulations.map((column) => (
+                        <TableHead key={column.accessor}>
+                          {column.header}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
                   <TableBody>
-                    <SkeletonRow ncolumns={columnsPostulations.length} mrows={10} />
+                    <SkeletonRow
+                      ncolumns={columnsPostulations.length}
+                      mrows={10}
+                    />
                   </TableBody>
                 </Table>
-              </div>
-            ) : isError ? (
-              <div className="m-10 rounded-md border">
-                <Table>
-                  <TableHeader>
+              ) : isError ? (
+                <div className="m-10 rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        {columnsPostulations.map((column) => (
+                          <TableHead key={column.accessor}>
+                            {column.header}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Clave UCC</TableHead>
-                      <TableHead>Apellido y Nombre</TableHead>
-                      <TableHead>Fotografía</TableHead>
-                      <TableHead>Careras</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <TableCell colSpan="7">
+                        <p> Error al obtener las postulaciones</p>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableRow>
-                    <TableCell colSpan="7">
-                      <p> Error al obtener las postulaciones</p>
-                    </TableCell>
-                  </TableRow>
-                </Table>
-              </div>
-            ) : postulations.length > 0 ? (
-              <DataTable columns={columnsPostulations} data={postulations} />
-            ) : (
-              <div className="m-10 rounded-md border">
-                <Table>
-                  <TableHeader>
+                  </Table>
+                </div>
+              ) : postulations.length > 0 ? (
+                <DataTable columns={columnsPostulations} data={postulations} page={"postulations"}/>
+              ) : (
+                <div className="m-10 rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        {columnsPostulations.map((column) => (
+                          <TableHead key={column.accessor}>
+                            {column.header}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Clave UCC</TableHead>
-                      <TableHead>Apellido y Nombre</TableHead>
-                      <TableHead>Fotografía</TableHead>
-                      <TableHead>Careras</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Acciones</TableHead>
+                      <TableCell colSpan="7">
+                        <p>
+                          {" "}
+                          No existen postulaciones para esta unidad académica{" "}
+                        </p>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableRow>
-                    <TableCell colSpan="7">
-                      <p>
-                        {" "}
-                        No existen postulaciones para esta unidad académica{" "}
-                      </p>
-                    </TableCell>
-                  </TableRow>
-                </Table>
-              </div>
-            )}
+                  </Table>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

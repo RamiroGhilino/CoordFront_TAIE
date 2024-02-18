@@ -1,15 +1,17 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signIn, signOut } from "next-auth/react";
 import { Card } from "@/components/ui/card";
 import { ModeToggle } from "@/components/modeTogle";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import axios from "./api/axios";
 import useAuth from "@/hooks/useAuth";
 import useAuthenticate from "@/hooks/useAuthenticate";
+import { toast } from "@/components/ui/use-toast";
+import { CheckIcon } from "@radix-ui/react-icons";
 
-const TOKEN_AUTH = '/api/token/auth/';
+const TOKEN_AUTH = "/api/token/auth/";
 
 /**
  * Renders the authentication page component.
@@ -26,19 +28,57 @@ export default function AuthenticationPage() {
   const { data: session, status } = useSession();
   const verifyGoogleAccount = useAuthenticate();
 
-
   useEffect(() => {
-    if(session?.access_token){
-      verifyGoogleAccount().then(verified => {
-        if(!verified){
+    if (session?.access_token) {
+      toast({
+        action: (
+          <div className="w-full flex items-center">
+            <div
+              className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[0.125em] motion-reduce:animate-spin-[1.5s] ease-linear infinite"
+              role="loading"
+            ></div>
+            <span className="ml-2">Verificando cuenta institucional...</span>
+          </div>
+        ),
+      });
+      verifyGoogleAccount().then((verified) => {
+        if (!verified) {
+          // If the verification fails, sign out the user, but signOut() refresh the page,
+          // so all react status are lost, i need to save in localstorage to show toast when re-render
+          //localStorage.setItem("rejected", true);
+          localStorage.setItem("rejected", true);
           signOut();
-          return null;
+          return;
         }
-        router.push('/postulations');
+        toast({
+          variant: "success",
+          action: (
+            <div className="w-full flex items-center">
+              <CheckIcon className="w-8 h-8" />
+              <span className="first-letter:capitalize">
+                ¡Cuenta Verificada!
+              </span>
+            </div>
+          ),
+        });
+        router.push("/postulations");
       });
     }
   }, [session?.access_token]);
-  
+
+  useEffect(() => {
+    //Check if we just re-rendered the page because of a singOut() call
+    if (localStorage.getItem("rejected")) {
+      localStorage.removeItem("rejected");
+      toast({
+        variant: "destructive",
+        title: "Cuenta no autorizada",
+        description:
+          "Sola las cuentas de dominio UCC corespondientes a Coordinadores pueden ingresar.",
+      });
+    }
+  }, []);
+
   /**
    * Handles the sign-in process.
    * Uses the `signIn` function from the `next-auth` library to initiate the sign-in.
@@ -46,7 +86,7 @@ export default function AuthenticationPage() {
   const handleSignIn = () => {
     signIn();
   };
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen relative">
       <div className="absolute top-0 right-0 mt-4 mr-4">
@@ -95,4 +135,3 @@ export default function AuthenticationPage() {
     </div>
   );
 }
-

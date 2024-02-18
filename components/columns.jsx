@@ -1,28 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import PostulationsDialog from "./PostulationsDialog";
 import TutorshipsDialog from "./TutorshipDialog";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Postulations from "@/pages/postulations";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  CheckCircledIcon,
+  CrossCircledIcon,
+  StopwatchIcon,
+} from "@radix-ui/react-icons";
 
 export const columnsReport = [
   {
@@ -30,7 +15,7 @@ export const columnsReport = [
     header: "ID",
   },
   {
-    accessorKey: "tutor_name",
+    accessorKey: "full_name",
     header: "Apellido y Nombre",
   },
   {
@@ -38,7 +23,8 @@ export const columnsReport = [
     header: "Fotografía",
     cell: ({ row }) => {
       const profile_picture = row.original.profile_picture;
-      const user_name = row.original.tutor_name;
+      console.log(row.original);
+      const user_name = row.original.full_name;
       return (
         <div
           style={{
@@ -70,6 +56,36 @@ export const columnsReport = [
   {
     accessorKey: "status",
     header: "Estado",
+    filterFn: (row, id, values) => {
+      //Capitalizo la primera letra del id porque internamente tanstack hace un lowercase
+      values = values.map((value) => {
+        return value.charAt(0).toUpperCase() + value.slice(1);
+      })
+      return values.includes(row.getValue(id));
+    },
+    cell: ({ row }) => {
+      let Icono;
+      if (row.original.status === "Done") {
+        Icono = <CheckCircledIcon />;
+      } else if (row.original.status === "Cancelled") {
+        Icono = <CrossCircledIcon />;
+      } else {
+        Icono = null; // no icon
+      }
+
+      return (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {Icono && <div className="mr-2 h-4 w-4">{Icono}</div>}
+          <span>{row.original.status}</span>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
@@ -90,7 +106,7 @@ export const columnsPostulations = [
     header: "Clave UCC",
   },
   {
-    accessorKey: "student_name",
+    accessorKey: "full_name",
     header: "Apellido y Nombre",
   },
   {
@@ -98,7 +114,7 @@ export const columnsPostulations = [
     header: "Fotografía",
     cell: ({ row }) => {
       const profile_picture = row.original.profile_picture;
-      const user_name = row.original.student_name;
+      const user_name = row.original.full_name;
       return (
         <div
           style={{
@@ -122,6 +138,40 @@ export const columnsPostulations = [
   {
     accessorKey: "status",
     header: "Estado",
+    filterFn: (row, id, values) => {
+      //Capitalizo la primera letra del id porque internamente tanstack hace un lowercase
+      values = values.map((value) => {
+        return value.charAt(0).toUpperCase() + value.slice(1);
+      })
+      return values.includes(row.getValue(id));
+    },
+    cell: ({ row }) => {
+      let Icono;
+      let text;
+      if (row.original.status === "Approved") {
+        text = "Aprobado";
+        Icono = <CheckCircledIcon />;
+      } else if (row.original.status === "Rejected") {
+        text = "Rechazado";
+        Icono = <CrossCircledIcon />;
+      } else if (row.original.status === "Revision") {
+        text = "En revisión";
+        Icono = <StopwatchIcon />;
+      }
+
+      return (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {Icono && <div className="mr-2">{Icono}</div>}
+          <span>{text}</span>
+        </div>
+      );
+    },
   },
   {
     id: "actions",

@@ -20,11 +20,11 @@ const Navbar = () => {
 
   return (
     <nav style={{ backgroundColor: '#132D58', boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)', width: '100%' }}>
-      <div className="px-4">
+      <div className="px-4 mx-10">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0 text-white">
-              <Image src={image} alt="UCC LOGO" className="h-8 w-8" />
+              <Image src={image} alt="UCC LOGO" className="h-10 w-10" />
             </div>
 
             <div className="hidden sm:ml-6 sm:flex space-x-4">

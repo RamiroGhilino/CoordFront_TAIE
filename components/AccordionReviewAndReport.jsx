@@ -71,11 +71,11 @@ const Report = ({ report }) => {
           <UserData user={report.tutor_user} />
           <div className="grid flex-grid gap-4  m-2">
             <Label className="h-2 w-40 font-bold" htmlFor="comment">
-              Contenido:
+              Contenido dictado:
             </Label>
             <p className="text-sm font-medium indent-1.5">{report.subject}</p>
-            <Label className="h-2 w-40 font-bold" htmlFor="comment">
-              Comentario:
+            <Label className="h-2 w-60 font-bold" htmlFor="comment">
+              Comentario de la tutoría:
             </Label>
             <p className="text-sm font-medium indent-1.5">{report.comment}</p>
           </div>
