@@ -29,6 +29,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "@/components/ui/use-toast";
+import { useQueryClient } from '@tanstack/react-query';
 
 // Definimos el esquema de validación con Zod
 const FormSchema = z
@@ -45,6 +46,8 @@ const FormSchema = z
 const PostulationsDialog = ({ row }) => {
   const [open, setOpen] = useState(false);
   const axiosPrivate = useAxiosPrivate();
+
+  const queryClient = useQueryClient();
 
   const {
     isLoading,
@@ -109,6 +112,10 @@ const PostulationsDialog = ({ row }) => {
               variant: "success",
               title: "Postulación Aceptada",
               description: "La postulación ha sido aprobada correctamente",
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: ["postulations"],
             });
           }
         })

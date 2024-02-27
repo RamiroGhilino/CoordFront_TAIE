@@ -65,9 +65,12 @@ export const columnsReport = [
     },
     cell: ({ row }) => {
       let Icono;
+      let text;
       if (row.original.status === "Done") {
+        text = "Realizada";
         Icono = <CheckCircledIcon />;
       } else if (row.original.status === "Cancelled") {
+        text = "Cancelada";
         Icono = <CrossCircledIcon />;
       } else {
         Icono = null; // no icon
@@ -82,7 +85,7 @@ export const columnsReport = [
           }}
         >
           {Icono && <div className="mr-2 h-4 w-4">{Icono}</div>}
-          <span>{row.original.status}</span>
+          <span>{text}</span>
         </div>
       );
     },
